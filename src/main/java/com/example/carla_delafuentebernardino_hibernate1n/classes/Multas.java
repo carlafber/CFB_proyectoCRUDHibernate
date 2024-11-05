@@ -3,7 +3,6 @@ package com.example.carla_delafuentebernardino_hibernate1n.classes;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.*;
-import java.io.*;
 import java.time.*;
 
 

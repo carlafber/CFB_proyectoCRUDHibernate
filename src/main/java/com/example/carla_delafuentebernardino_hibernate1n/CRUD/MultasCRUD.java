@@ -6,8 +6,6 @@ import com.example.carla_delafuentebernardino_hibernate1n.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class MultasCRUD implements CRUDMultas{

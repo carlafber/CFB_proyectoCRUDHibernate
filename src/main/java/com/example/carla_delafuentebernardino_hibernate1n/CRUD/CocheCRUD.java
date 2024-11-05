@@ -68,22 +68,4 @@ public class CocheCRUD implements CRUDCoche{
         }
         return coches;
     }
-
-    @Override
-    public Coche obtenerCocheMatricula(String matricula) {
-        Transaction transaction = null;
-        Coche coche = null;
-        try(Session session = factory.openSession()) {
-            transaction = session.beginTransaction();
-            coche = session.createQuery("from Coche Where matricula = :matricula", Coche.class).setParameter("matricula", matricula).uniqueResult();
-            transaction.commit();
-        } catch (Exception e) {
-            if(transaction != null) {
-                transaction.rollback();
-            }
-        }
-        return coche;
-    }
-
-
 }

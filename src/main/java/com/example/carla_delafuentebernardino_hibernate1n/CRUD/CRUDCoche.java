@@ -12,6 +12,4 @@ public interface CRUDCoche {
     void eliminarCocheMatricula(String matricula);
 
     List<Coche> obtenerCoches();
-
-    Coche obtenerCocheMatricula(String matricula);
 }
