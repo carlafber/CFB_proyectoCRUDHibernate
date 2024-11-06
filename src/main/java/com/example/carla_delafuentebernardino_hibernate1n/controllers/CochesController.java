@@ -173,7 +173,6 @@ public class CochesController implements Initializable {
                 Stage stage = (Stage) bt_multas.getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
-
             } catch (IOException e) {
                 Alerta.mensajeError(e.getMessage());
             }

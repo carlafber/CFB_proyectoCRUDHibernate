@@ -188,6 +188,9 @@ public class MultasController implements Initializable {
     public void cargarMultas(Coche coche) {
         multas = multasCRUD.obtenerMultasCoche(coche);
         tv_multas.getItems().setAll(multas);
+        if(multas.isEmpty()){
+            Alerta.mensajeInfo("INFO","Este coche no tiene ninguna multa.");
+        }
     }
 
     public void limpiarCampos() {
