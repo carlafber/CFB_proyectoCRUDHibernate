@@ -12,45 +12,53 @@ public class MultasCRUD implements CRUDMultas{
     SessionFactory factory = HibernateUtil.getSessionFactory();
 
     @Override
-    public void insertarMulta(Multas multa) {
+    public boolean insertarMulta(Multas multa) {
         Transaction transaction = null;
+        boolean cambios = false;
         try(Session session = factory.openSession()) {
             transaction = session.beginTransaction();
             session.save(multa);
+            cambios = true;
             transaction.commit();
         } catch (Exception e) {
             if(transaction != null) {
                 transaction.rollback();
             }
         }
+        return cambios;
     }
 
     @Override
-    public void actualizarMulta(Multas multa) {
+    public boolean actualizarMulta(Multas multa) {
         Transaction transaction = null;
+        boolean cambios = false;
         try(Session session = factory.openSession()) {
             transaction = session.beginTransaction();
-            session.saveOrUpdate(multa);
+            session.update(multa);
             transaction.commit();
+            cambios = true;
         } catch (Exception e) {
-            if(transaction != null) {
+            if (transaction != null) {
                 transaction.rollback();
             }
         }
+        return cambios;
     }
 
     @Override
-    public void eliminarMultaID(int id) {
+    public boolean eliminarMulta(Multas multa) {
         Transaction transaction = null;
+        boolean cambios = false;
         try(Session session = factory.openSession()) {
             transaction = session.beginTransaction();
-            Multas multa = session.get(Multas.class, id);
             session.delete(multa);
+            cambios = true;
             transaction.commit();
         } catch (Exception e) {
             if(transaction != null)
                 transaction.rollback();
         }
+        return cambios;
     }
 
     @Override

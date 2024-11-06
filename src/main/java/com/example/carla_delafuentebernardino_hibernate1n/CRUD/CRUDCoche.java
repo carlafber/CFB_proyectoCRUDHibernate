@@ -5,11 +5,11 @@ import com.example.carla_delafuentebernardino_hibernate1n.classes.Coche;
 import java.util.List;
 
 public interface CRUDCoche {
-    void insertarCoche(Coche coche);
+    boolean insertarCoche(Coche coche);
 
-    void actualizarCoche(Coche coche);
+    boolean actualizarCoche(Coche coche);
 
-    void eliminarCocheMatricula(String matricula);
+    boolean eliminarCoche(Coche coche);
 
     List<Coche> obtenerCoches();
 }

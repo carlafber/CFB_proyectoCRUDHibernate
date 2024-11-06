@@ -89,15 +89,23 @@ public class MultasController implements Initializable {
         if (multa_seleccionada == null) {
             Alerta.mensajeError("Seleccione una multa de la tabla para poder modificarla.");
         } else {
+            Multas multa_original = new Multas(multa_seleccionada);
             multa_seleccionada.setPrecio(Double.parseDouble(txt_precio.getText()));
             multa_seleccionada.setFecha(dt_fecha.getValue());
-
             multa_seleccionada.setCoche(coche);
 
-            multasCRUD.actualizarMulta(multa_seleccionada);
-
-            cargarMultas(multa_seleccionada.getCoche());
-            Alerta.mensajeInfo("ÉXITO", "Multa modificada correctamente.");
+            if(multa_original.equals(multa_seleccionada)) {
+                Alerta.mensajeError("Debe modificar al menos un campo para poder actualizar la multa.");
+            } else {
+                if(multasCRUD.actualizarMulta(multa_seleccionada)) {
+                    cargarMultas(multa_seleccionada.getCoche());
+                    Alerta.mensajeInfo("ÉXITO", "Multa actualizada correctamente.");
+                } else {
+                    Alerta.mensajeError("No se pudo actualizar la multa.");
+                }
+            }
+            limpiarCampos();
+            multa_seleccionada = null;
         }
     }
 
@@ -105,7 +113,6 @@ public class MultasController implements Initializable {
     void OnMultaClick(MouseEvent event) {
         multa_seleccionada = tv_multas.getSelectionModel().getSelectedItem();
         if (multa_seleccionada != null) {
-            txt_matricula.setText(multa_seleccionada.getCoche().getMatricula());
             txt_idmulta.setText(String.valueOf(multa_seleccionada.getId_multa()));
             txt_precio.setText(String.valueOf(multa_seleccionada.getPrecio()));
             dt_fecha.setValue(multa_seleccionada.getFecha());
@@ -117,7 +124,7 @@ public class MultasController implements Initializable {
         if (multa_seleccionada == null) {
             Alerta.mensajeError("Seleccione una multa de la tabla para poder eliminarla.");
         } else {
-            multasCRUD.eliminarMultaID(multa_seleccionada.getId_multa());
+            multasCRUD.eliminarMulta(multa_seleccionada);
             cargarMultas(coche);
             Alerta.mensajeInfo("ÉXITO", "Multa eliminada correctamente.");
             limpiarCampos();
@@ -129,12 +136,19 @@ public class MultasController implements Initializable {
         if(txt_precio.getText().isEmpty() || dt_fecha.getValue() == null){
             Alerta.mensajeError("Complete todos los campos, por favor.");
         } else {
-            Multas multa_nueva = new Multas(Double.parseDouble(txt_precio.getText()), dt_fecha.getValue());
-            multa_nueva.setCoche(coche);
-            multasCRUD.insertarMulta(multa_nueva);
-            cargarMultas(coche);
-            txt_idmulta.setText(String.valueOf(multa_nueva.getId_multa()));
-            Alerta.mensajeInfo("ÉXITO", "Multa insertada correctamente.");
+            if(multa_seleccionada != null) {
+                Alerta.mensajeError("No seleccione una multa de la tabla, debe crear una nueva");
+            } else {
+                Multas multa_nueva = new Multas(Double.parseDouble(txt_precio.getText()), dt_fecha.getValue());
+                multa_nueva.setCoche(coche);
+                if(multasCRUD.insertarMulta(multa_nueva)) {
+                    cargarMultas(coche);
+                    txt_idmulta.setText(String.valueOf(multa_nueva.getId_multa()));
+                    Alerta.mensajeInfo("ÉXITO", "Multa insertada correctamente.");
+                } else {
+                    Alerta.mensajeError("No se pudo insertar la multa.");
+                }
+            }
             limpiarCampos();
         }
     }
@@ -149,7 +163,6 @@ public class MultasController implements Initializable {
             FXMLLoader fxmlLoader = new FXMLLoader(MultasApplication.class.getResource("coches.fxml"));
             Parent root = fxmlLoader.load();
             CochesController controller = fxmlLoader.getController();
-            //controller.obtenerCoche(multa_seleccionada);
 
             Scene scene = new Scene(root);
             Stage stage = (Stage) bt_volver.getScene().getWindow();

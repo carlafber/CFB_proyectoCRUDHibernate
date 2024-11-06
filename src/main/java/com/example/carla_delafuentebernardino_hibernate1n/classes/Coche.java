@@ -4,6 +4,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -27,18 +29,19 @@ public class Coche implements Serializable {
     @Column(name="tipo")
     private String tipo;
 
-    /*@OneToMany(mappedBy = "coche", cascade = CascadeType.ALL)
-    private List<Multas> multas;*/
+    @OneToMany(mappedBy = "coche", cascade = CascadeType.ALL)
+    private List<Multas> multas;
 
     public Coche() {
     }
 
-    public Coche(int id, String matricula, String marca, String modelo, String tipo) {
+    public Coche(int id, String matricula, String marca, String modelo, String tipo, List<Multas> multas) {
         this.id = id;
         this.matricula = matricula;
         this.marca = marca;
         this.modelo = modelo;
         this.tipo = tipo;
+        this.multas = multas;
     }
 
     public Coche(String matricula, String marca, String modelo, String tipo) {
@@ -46,6 +49,13 @@ public class Coche implements Serializable {
         this.marca = marca;
         this.modelo = modelo;
         this.tipo = tipo;
+    }
+
+    public Coche(Coche coche) {
+        this.matricula = coche.matricula;
+        this.marca = coche.marca;
+        this.modelo = coche.modelo;
+        this.tipo = coche.tipo;
     }
 
     public int getId() {
@@ -88,14 +98,21 @@ public class Coche implements Serializable {
         this.tipo = tipo;
     }
 
-    /*public List<Multas> getMultas() {
+    public List<Multas> getMultas() {
         return multas;
     }
 
     public void setMultas(List<Multas> multas) {
         this.multas = multas;
-    }*/
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Coche coche = (Coche) o;
+        return matricula.equals(coche.matricula) && marca.equals(coche.marca) && modelo.equals(coche.modelo) && tipo.equals(coche.tipo);
+    }
     @Override
     public String toString() {
         return matricula+" "+marca + " " + modelo+" "+tipo;

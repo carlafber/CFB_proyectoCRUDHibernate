@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.*;
 import java.time.*;
+import java.util.Objects;
 
 
 @Entity
@@ -39,6 +40,11 @@ public class Multas {
         this.fecha = fecha;
     }
 
+    public Multas(Multas multas) {
+        this.precio = multas.precio;
+        this.fecha = multas.fecha;
+        this.coche = multas.coche;
+    }
 
 
     public int getId_multa() {
@@ -71,6 +77,14 @@ public class Multas {
 
     public void setCoche(Coche coche) {
         this.coche = coche;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Multas multas = (Multas) o;
+        return Double.compare(precio, multas.precio) == 0 && fecha.equals(multas.fecha) && coche.equals(multas.coche);
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.example.carla_delafuentebernardino_hibernate1n.CRUD.CocheCRUD;
 import com.example.carla_delafuentebernardino_hibernate1n.MultasApplication;
 import com.example.carla_delafuentebernardino_hibernate1n.classes.Coche;
 import com.example.carla_delafuentebernardino_hibernate1n.util.Alerta;
+import com.example.carla_delafuentebernardino_hibernate1n.util.Validar;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,14 +81,23 @@ public class CochesController implements Initializable {
         if (coche_seleccionado == null) {
             Alerta.mensajeError("Seleccione un coche de la tabla para poder modificarlo.");
         } else {
+            Coche coche_original = new Coche(coche_seleccionado);
             coche_seleccionado.setMarca(txt_marca.getText());
             coche_seleccionado.setModelo(txt_modelo.getText());
             coche_seleccionado.setTipo(cb_tipo.getValue());
 
-            cocheCRUD.actualizarCoche(coche_seleccionado);
-
-            cargarCoches();
-            Alerta.mensajeInfo("ÉXITO", "Coche modificado correctamente.");
+            if(coche_original.equals(coche_seleccionado)){
+                Alerta.mensajeError("Debe modificar al menos un campo para poder actualizar el coche.");
+            } else {
+                if(cocheCRUD.actualizarCoche(coche_seleccionado)){
+                    cargarCoches();
+                    Alerta.mensajeInfo("ÉXITO", "Coche actualizado correctamente.");
+                } else {
+                    Alerta.mensajeError("No se pudo actualizar el coche.");
+                }
+            }
+            limpiarCampos();
+            coche_seleccionado = null;
         }
     }
 
@@ -107,10 +117,13 @@ public class CochesController implements Initializable {
         if (coche_seleccionado == null) {
             Alerta.mensajeError("Seleccione un coche de la tabla para poder eliminarlo.");
         } else {
-            cocheCRUD.eliminarCocheMatricula(coche_seleccionado.getMatricula());
-            cargarCoches();
-            Alerta.mensajeInfo("ÉXITO", "Coche eliminado correctamente.");
-            limpiarCampos();
+            if(cocheCRUD.eliminarCoche(coche_seleccionado)){
+                cargarCoches();
+                Alerta.mensajeInfo("ÉXITO", "Coche eliminado correctamente.");
+                limpiarCampos();
+            } else {
+                Alerta.mensajeError("No se pudo eliminar el coche.");
+            }
         }
     }
 
@@ -119,11 +132,24 @@ public class CochesController implements Initializable {
         if(txt_matricula.getText().isEmpty() || txt_marca.getText().isEmpty() || txt_modelo.getText().isEmpty() || cb_tipo.getValue() == null){
             Alerta.mensajeError("Complete todos los campos, por favor.");
         } else {
-            Coche coche_nuevo = new Coche(txt_matricula.getText(), txt_marca.getText(), txt_modelo.getText(), cb_tipo.getValue());
-            cocheCRUD.insertarCoche(coche_nuevo);
-            cargarCoches();
-            Alerta.mensajeInfo("ÉXITO", "Coche insertado correctamente.");
-            limpiarCampos();
+            if(Validar.validarMatricula(txt_matricula.getText())) {
+                if(cocheCRUD.existeCoche(txt_matricula.getText())) {
+                    Alerta.mensajeError("Ya existe un coche con esa matricula.");
+                    limpiarCampos();
+                } else {
+                    Coche coche_nuevo = new Coche(txt_matricula.getText(), txt_marca.getText(), txt_modelo.getText(), cb_tipo.getValue());
+                    if (cocheCRUD.insertarCoche(coche_nuevo)){
+                        cargarCoches();
+                        Alerta.mensajeInfo("ÉXITO", "Coche insertado correctamente.");
+                        limpiarCampos();
+                    } else {
+                        Alerta.mensajeError("No se pudo insertar el coche.");
+                    }
+                }
+            } else {
+                Alerta.mensajeError("El formato de la matricula introducida es incorrecto, tiene que ser del tipo '0000AAA'.");
+                txt_matricula.clear();
+            }
         }
     }
 
@@ -134,7 +160,6 @@ public class CochesController implements Initializable {
 
     @FXML
     void OnVerMultasClick(ActionEvent event) {
-        System.out.println(coche_seleccionado.toString());
         if(coche_seleccionado == null) {
             Alerta.mensajeError("Debe seleccionar un coche para poder consultar sus multas.");
         } else {
@@ -143,7 +168,6 @@ public class CochesController implements Initializable {
                 Parent root = fxmlLoader.load();
                 MultasController controller = fxmlLoader.getController();
                 controller.obtenerCoche(coche_seleccionado);
-
 
                 Scene scene = new Scene(root);
                 Stage stage = (Stage) bt_multas.getScene().getWindow();
