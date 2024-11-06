@@ -2,7 +2,6 @@ package com.example.carla_delafuentebernardino_hibernate1n.CRUD;
 
 import com.example.carla_delafuentebernardino_hibernate1n.classes.Coche;
 import com.example.carla_delafuentebernardino_hibernate1n.util.HibernateUtil;
-import com.example.carla_delafuentebernardino_hibernate1n.util.Validar;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -101,5 +100,3 @@ public class CocheCRUD implements CRUDCoche{
         return coche;
     }
 }
-
-//dar id a la multa automaticamente

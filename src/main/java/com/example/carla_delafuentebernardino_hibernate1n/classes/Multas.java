@@ -4,8 +4,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.*;
 import java.time.*;
-import java.util.Objects;
-
 
 @Entity
 @Table(name = "Multas")
@@ -45,7 +43,6 @@ public class Multas {
         this.fecha = multas.fecha;
         this.coche = multas.coche;
     }
-
 
     public int getId_multa() {
         return id_multa;

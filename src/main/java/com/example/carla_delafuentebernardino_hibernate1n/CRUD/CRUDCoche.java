@@ -12,4 +12,6 @@ public interface CRUDCoche {
     boolean eliminarCoche(Coche coche);
 
     List<Coche> obtenerCoches();
+
+    boolean existeCoche(String matricula);
 }
